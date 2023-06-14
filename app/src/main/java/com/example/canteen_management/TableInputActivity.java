@@ -25,12 +25,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.example.canteen_management.Table;
 
 public class TableInputActivity extends AppCompatActivity {
 
     TextInputEditText tid;
     String tableId;
     FirebaseFirestore ref;
+    Table tb;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,8 +86,7 @@ public class TableInputActivity extends AppCompatActivity {
         }
         else {
             ref = FirebaseFirestore.getInstance();
-            Map<String, String> tb = new HashMap<>();
-            tb.put("tableId", tableId);
+            tb = new Table(tableId,false);
             ref.collection("tables")
                     .add(tb)
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
