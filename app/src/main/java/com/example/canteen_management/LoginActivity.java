@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -21,6 +22,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -62,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void firebaseLogin(String userId, String userPass, FirebaseFirestore ref) {
         // Logic
+        List<Boolean> lst = new ArrayList<>();
         if(userId.charAt(0) == 'A') {
             ref.collection("admin")
                     .get()
@@ -73,10 +78,10 @@ public class LoginActivity extends AppCompatActivity {
                                     Log.d(TAG, document.getId() + " => " + document.getData());
                                     Admin ad = document.toObject(Admin.class);
                                     if(ad.getAdminId().equals(userId) && ad.getAdminPass().equals(userPass)) {
-                                        Intent intent = new Intent(LoginActivity.this, Apps.class);
-                                        startActivity(intent);
+                                        lst.add(true);
                                     }
                                 }
+                                update(lst);
                             } else {
                                 Log.w(TAG, "Error getting documents.", task.getException());
                             }
@@ -85,6 +90,17 @@ public class LoginActivity extends AppCompatActivity {
         }
         else {
             // User Login
+        }
+    }
+
+    private void update(List<Boolean> lst) {
+        if(lst.size() == 0) {
+            Toast.makeText(this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Intent intent = new Intent(LoginActivity.this, Apps.class);
+            startActivity(intent);
+            finish();
         }
     }
 
