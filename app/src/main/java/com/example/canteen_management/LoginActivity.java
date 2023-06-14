@@ -5,41 +5,22 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.google.android.gms.auth.api.phone.SmsRetriever;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.example.canteen_management.Admin;
-import com.example.canteen_management.User;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.ktx.Firebase;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -91,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     Log.d(TAG, document.getId() + " => " + document.getData());
                                     Admin ad = document.toObject(Admin.class);
-                                    if(ad.getAdminId().equals(userId)) {
+                                    if(ad.getAdminId().equals(userId) && ad.getAdminPass().equals(userPass)) {
                                         Intent intent = new Intent(LoginActivity.this, Apps.class);
                                         startActivity(intent);
                                     }
@@ -112,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         account = GoogleSignIn.getLastSignedInAccount(this);
-        updateUI(account);
+        makeChange(account);
     }
 
     private void signIn() {
@@ -120,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivityForResult(signInIntent, 1);
     }
 
-    private void updateUI(GoogleSignInAccount account) {
+    private void makeChange(GoogleSignInAccount account) {
         if(account != null) {
             Intent intent = new Intent(this, Apps.class);
             startActivity(intent);
@@ -143,10 +124,10 @@ public class LoginActivity extends AppCompatActivity {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            updateUI(account);
+            makeChange(account);
         } catch (ApiException e) {
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-            updateUI(null);
+            makeChange(null);
         }
     }
 }

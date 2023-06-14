@@ -12,6 +12,9 @@ public class Admin {
     public void setAdminPass(String adminPass) {
         this.adminPass = adminPass;
     }
+
+    public String getAdminPass() { return adminPass; }
+
     public String getAdminPhone() {
         return adminPhone;
     }
